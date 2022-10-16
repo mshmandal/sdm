@@ -7,25 +7,40 @@
 #############################################################################
 # SETUP R PROJECT
 
-#start fresh
+# Start fresh
+# When we run a R project over and over again. Sometimes it is better to start
+# from beginning. Clearing R memory and session variables
+
 gc()            # clear memory
 rm(list=ls())   # clear R session
 
-# set work directory
+# Set work directory
+# This is an important step because we want to make sure our data and outputs
+# are saved clearly inside our project folder. So, we first make sure that we
+# are working inside our project directory. To check the current project
+# directory use getwd() function. And to change the current working directory
+# to a new one, use the setwd() function
 getwd()
 # setwd("D:/github/sdm") 
 
-# create new directory to save data and results
+# Now we create two separate folder inside our project directory i.e. inside 
+# the "D:/github/sdm" folder to save data and results
 dir.create("./data")
 dir.create("./result")
 
 #-------------------------------------------------------------------------------
 # STEP 1: Install required libraries
 #-------------------------------------------------------------------------------
+# For our project first we need to install few R packages. Make sure to run them
+# for first time. Note: the dismo package is for running the maxent. 
+# The maxent function requires rJava package. So, in your desktop/laptop Java
+# should be installed, if not you will get error.
+
 # install.packages("raster",dependencies = T)
 # install.packages("dismo",dependencies = T)
 # install.packages("SDMtune",dependencies = T)
 
+# Now load the packages
 library(raster)
 library(SDMtune)
 library(dismo)
@@ -34,25 +49,56 @@ library(dismo)
 # Step 2 : Prepare data for model
 #-------------------------------------------------------------------------------
 
+# There are different ways of implementing a SDM.
+# The following workflow is a practical way that I use. I do not state that
+# this is the best way of most efficient way. However, I find that this works
+# good for my projects.
+
+# The most important and perhaps the hardest of all in making a SDM to decide
+# study area, input predictors and then prepare for modelling. Here we, first
+# decide an study area extent bounded by bounding box 
+# 91,93,19,23 (min longitude, max longitude, min latitude, max latitude)
+# Then we download a level2 administrative division shapefile from GADM website
 
 ## 2.1 GET BD SHAPEFILE and WORLCLIM data
 ext = c(91,93,19,23)  # c(xmin,xmax,ymin,ymax)
 bd  = getData('GADM',country='Bangladesh',level=2,path = "./data",download = F)
-
-# to view
-plot(bd,axes=T)
+bd_main = bd # saving in a new variable to use later
 
 # crop the country shape file to study area extent
 bd  = crop(bd,extent(ext))
 
-
+# Make plot to visualize the data layers
+par(mfrow=c(1,2))
+plot(bd_main,axes=T, main="Bangladesh admin Level2")
+plot(bd,axes=T, main="Cropped shapefile")
+dev.off() # close the plot
 
 
 ## 2.2 Raster/Image data: GET WORLD CLIM DATA 
 
+# The worldclim website provides the documentation of the bioclimatic variables
+# and other important details about the data. There are other variables for 
+# example elevation, windspeed etc. 
+# Note several future climatic projection datasets are also avaialbe on
+# the website. I recommend to check the website and read about the data
 # browseURL("https://www.worldclim.org/data/bioclim.html") 
+
+
+# Here we, download the 19 bioclimatic variables.
+# We coose the resolution "0.5" degress which is roughly 1km2 grid size
+# This is the spatial resolution in case of images. Because this is a big 
+# image we can't download the global image, rather we need to give a longitude
+# latidue coordinates as getData() function argument. Then an data will
+# be downloaded sorrunding the coordinates (this is not the best description)
+# but the function documentation is good enouhg for understanding.
+# So, please read help(getData, raster) package documentation
+# We also, provide a directory where to save the data as the path argument "path"
+# The download=F argument specifies that don't download, if we alreay previously
+# download
+
 bio19 = getData('worldclim','bio',res=0.5,lon=90, lat=22,path = "./data",download=F)
-bio19 = crop(bio19,extent(ext)) 
+bio19 = crop(bio19,extent(ext))  # crop the data using the extent
 
 # HOW TO PLOT RASTER AND SHAPEFILE
 plot(bio19[[1]],main="Annual mean temperature")
@@ -75,11 +121,26 @@ dev.off()
 #-------------------------------------------------------------------------------
 
 # GET RANDOM POINTS
+
+# For maxent SDM
+# We need occurrenct points which is sometimes called observed occurrences
+# Then we also need where the species are not present, also called absense
+# Logistic model, # Presense = 1, Absense  = 0
+# But Maxent is popular because we do not necessarily need or have Absense data
+# We can randomly genereate these points and using Maxent model try to 
+# approximate the species distribution, please refer to 
+# Phillips, S. J. (2005). A brief tutorial on Maxent. AT&T Research, 190(4), 231-259.
+
+# Presence points
 occ = dismo::randomPoints(n=20,bio19[[1]])
+
+# Absense points
 bg = dismo::randomPoints(n=1000,bio19[[1]])
 
 
-# Prepare data
+# Prepare data SWD object which actually only requires for SDMtune model
+# If we want to use other package we do not need this format. But, SDMtune
+# package is very useful, later we will discover.
 data <- SDMtune::prepareSWD(
   species = "Scientific Name", 
   p = occ, 
@@ -94,7 +155,9 @@ data@data[1:3,]
 data@pa[1:6]
 data@coords[1:6,]
 
+#-------------------------------------------------------------------------------
 # TRAIN A DEFAULT MAXENT MODEL
+#-------------------------------------------------------------------------------
 mx1 = train(method = "Maxent",fc="lqh",verbose = T,data = data)
 names(bio19)
 
@@ -103,7 +166,9 @@ plotResponse(mx1, var = c("bio1_29"), type = "cloglog")
 plotROC(mx1)
 auc(mx1)
 
-# predict to 
+#-------------------------------------------------------------------------------
+# APPLY MODEL PREDICTION
+#-------------------------------------------------------------------------------
 map = predict(mx1, data=bio19, type="cloglog")
 
 map # check
@@ -117,6 +182,9 @@ plotPred(map,
 
 # Check SDM PACKAGE HELP
 browseURL(url = "https://cran.r-project.org/web/packages/SDMtune/vignettes/basic-use.html")
+
+
+
 
 #############################################################################
 sessionInfo()
