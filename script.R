@@ -132,7 +132,12 @@ dev.off()
 # Phillips, S. J. (2005). A brief tutorial on Maxent. AT&T Research, 190(4), 231-259.
 
 # Presence points
-occ = dismo::randomPoints(n=20,bio19[[1]])
+occ = dismo::randomPoints(n=30,bio19[[1]])
+# If you have your species occurrence points in a csv file where first two
+# columns are "longitude" and "latitude" (order is important), then you can
+# read them 
+occ = read.csv("./data/occ.csv")
+
 
 # Absense points
 bg = dismo::randomPoints(n=1000,bio19[[1]])
@@ -151,34 +156,75 @@ data <- SDMtune::prepareSWD(
 
 # check the data object, what is inside
 data@species
-data@data[1:3,]
+data@data[1:10,1:3]
 data@pa[1:6]
 data@coords[1:6,]
 
 #-------------------------------------------------------------------------------
 # TRAIN A DEFAULT MAXENT MODEL
 #-------------------------------------------------------------------------------
-mx1 = train(method = "Maxent",fc="lqh",verbose = T,data = data)
-names(bio19)
+# the train() function of the SDMtune package is used to train a model
+# The type of model to train is defined by the method argument. In our case
+# it is "Maxent". Read the function documentation
+help(train, SDMtune)
+
+# For a maxent model we can specify some more argument, for example which 
+# feature classes we want to use. The argument for that is "fc". The below code
+# we only specify "lqh" which stands for linear, quardatic and hinge feature 
+# classes. The regularization value in the original maxent implementation is
+# 0.5. But increase of SDMtune is 1, so we can specify which one to use
+# If we want we can tune this value i.e. find a value based on some algorithm
+# search
+
+mx1 = train(
+  method = "Maxent",  # the name of the model
+  fc="lqh",           # feature classes: linear, quadratic, hinge
+  reg=0.5,            # regularization parameters
+  verbose = T,        # show message during training
+  data = data,        # the data variable
+  iter = 1000         # number of iterations the logarithm will run
+  )    
+
 
 # Model results
-plotResponse(mx1, var = c("bio1_29"), type = "cloglog")
-plotROC(mx1)
-auc(mx1)
+# SDMtune has several functions to show the model results
+# First we plot the response curves, for the first predictor variable
+# we can do that for multiple variables also
+plotResponse(mx1, var = c("bio1_29"), type = "logistic")
+
+# Then we plot the ROC curve for our model which shows the traing AUC
+auc(mx1)        # just to get the model AUC
+plotROC(mx1)    # to plot the AUC curve
+
 
 #-------------------------------------------------------------------------------
 # APPLY MODEL PREDICTION
 #-------------------------------------------------------------------------------
-map = predict(mx1, data=bio19, type="cloglog")
+# Finally we predict our train model to the data to get probability of 
+# occurrence in each pixel/gird in our study area
+map = predict(mx1, data=bio19, type="logistic")
 
-map # check
+# The output is a raster layer, which is a image data class for raster package
+# we can plot the map using plotPred() function. We could use the default plot()
+# function or even ggplot2 package. But for now we will just use the plotPred 
+# function.
 
 # plot the results
+dev.off() # clear the plotting window at first
 plotPred(map, 
  lt = "Habitat\nsuitability",
  colorramp = c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 )
 
+# Here is another way of plotting the map
+# crop the prediction to our study area
+bd_pred = mask(map,bd)
+plot(
+  bd_pred,
+  breaks=seq(0,1,0.2),
+  col= rainbow(length(seq(0,1,0.2)))
+ )
+plot(bd,add=T) # overlay the shapefile on top of it
 
 # Check SDM PACKAGE HELP
 browseURL(url = "https://cran.r-project.org/web/packages/SDMtune/vignettes/basic-use.html")
