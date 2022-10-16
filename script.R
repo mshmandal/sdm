@@ -1,19 +1,27 @@
 #############################################################################
 # Author: Mohammad Shamim Hasan Mandal
 # Date  : July 13 2022
-# name  : script.R
-# aim   : Demo project: setup R project and make Maxent model
+# Name  : script.R
+# Obj.  : Demo project: setup R project and make Maxent model
+# Update: October 16 2022
 #############################################################################
 # SETUP R PROJECT
 
 #start fresh
-gc()
-rm(list=ls())
+gc()            # clear memory
+rm(list=ls())   # clear R session
 
 # set work directory
-setwd("C:/Git/sdm") 
+getwd()
+# setwd("D:/github/sdm") 
 
-# required libraries
+# create new directory to save data and results
+dir.create("./data")
+dir.create("./result")
+
+#-------------------------------------------------------------------------------
+# STEP 1: Install required libraries
+#-------------------------------------------------------------------------------
 # install.packages("raster",dependencies = T)
 # install.packages("dismo",dependencies = T)
 # install.packages("SDMtune",dependencies = T)
@@ -22,17 +30,27 @@ library(raster)
 library(SDMtune)
 library(dismo)
 
-dir.create("./data")
-dir.create("./result")
+#-------------------------------------------------------------------------------
+# Step 2 : Prepare data for model
+#-------------------------------------------------------------------------------
 
 
-#############################################################################
-# GET BD SHAPEFILE and WORLCLIM data
+## 2.1 GET BD SHAPEFILE and WORLCLIM data
 ext = c(91,93,19,23)  # c(xmin,xmax,ymin,ymax)
 bd  = getData('GADM',country='Bangladesh',level=2,path = "./data",download = F)
+
+# to view
+plot(bd,axes=T)
+
+# crop the country shape file to study area extent
 bd  = crop(bd,extent(ext))
 
-# GET WORLD CLIM DATA # browseURL("https://www.worldclim.org/data/bioclim.html") 
+
+
+
+## 2.2 Raster/Image data: GET WORLD CLIM DATA 
+
+# browseURL("https://www.worldclim.org/data/bioclim.html") 
 bio19 = getData('worldclim','bio',res=0.5,lon=90, lat=22,path = "./data",download=F)
 bio19 = crop(bio19,extent(ext)) 
 
@@ -52,8 +70,10 @@ dev.off()
 # writeRaster(bio19,filename = "./data/bio19_bd.grd",overwrite=T)
 # bio19 = stack("./data/bio19_bd.grd")
  
-#############################################################################
-# MAXENT
+#-------------------------------------------------------------------------------
+# STEP 4: Prepare data for Maxent and run Maxent
+#-------------------------------------------------------------------------------
+
 # GET RANDOM POINTS
 occ = dismo::randomPoints(n=20,bio19[[1]])
 bg = dismo::randomPoints(n=1000,bio19[[1]])
@@ -66,6 +86,7 @@ data <- SDMtune::prepareSWD(
   a = bg,
   env = bio19, 
   )
+
 
 # check the data object, what is inside
 data@species
