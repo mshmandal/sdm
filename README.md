@@ -21,6 +21,7 @@ current project directory use getwd() function. And to change the
 current working directory to a new one, use the setwd() function
 
 ``` r
+# Check current working directory
 # getwd()
 ```
 
@@ -213,7 +214,7 @@ absense.
 bg = dismo::randomPoints(n=1000,bio19[[1]])
 ```
 
-## Using SDMtune package
+### Using SDMtune package
 
 Model development using SDMtune package involves creating an SWD object.
 The package documentation is truely details enough and a great resource.
@@ -243,7 +244,7 @@ data@pa[1:6]
 data@coords[1:6,]
 ```
 
-# TRAIN A DEFAULT MAXENT MODEL
+## Step 5. Train a simple maxent model
 
 the train() function of the SDMtune package is used to train a model The
 type of model to train is defined by the method argument. In our case it
@@ -291,7 +292,7 @@ plotROC(mx1)    # to plot the AUC curve
 
 ![](README_files/figure-markdown_github/unnamed-chunk-19-2.png)
 
-### APPLY MODEL PREDICTION
+### Apply model prediction
 
 Finally we predict our train model to the data to get probability of
 occurrence in each pixel/gird in our study area
@@ -300,12 +301,12 @@ occurrence in each pixel/gird in our study area
 map = predict(mx1, data=bio19, type="logistic")
 ```
 
+## Step 6. Visualize results
+
 The output is a raster layer, which is a image data class for raster
 package. We can plot the map using plotPred() function. We could use the
 default plot() function or even ggplot2 package. But for now we will
 just use the plotPred function.
-
-# plot the results
 
 ``` r
 dev.off() # clear the plotting window at first
