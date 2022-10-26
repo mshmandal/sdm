@@ -2,7 +2,9 @@
 title: "Maxent demo model run in R"
 author: "Mohammad Shamim Hasan Mandal"
 date: "2022-10-26"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
