@@ -3,8 +3,8 @@ title: "Maxent demo model run in R"
 author: "Mohammad Shamim Hasan Mandal"
 date: "2022-10-26"
 output:
-  html_document:
-    df_print: paged
+  md_document:
+    variant: markdown_github
 ---
 
 ```{r setup, include=FALSE}
