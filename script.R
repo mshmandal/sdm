@@ -28,6 +28,7 @@ getwd()
 dir.create("./data")
 dir.create("./result")
 
+
 #-------------------------------------------------------------------------------
 # STEP 1: Install required libraries
 #-------------------------------------------------------------------------------
@@ -36,9 +37,9 @@ dir.create("./result")
 # The maxent function requires rJava package. So, in your desktop/laptop Java
 # should be installed, if not you will get error.
 
-# install.packages("raster",dependencies = T)
-# install.packages("dismo",dependencies = T)
-# install.packages("SDMtune",dependencies = T)
+install.packages("raster",dependencies = T)
+install.packages("dismo",dependencies = T)
+install.packages("SDMtune",dependencies = T)
 
 # Now load the packages
 library(raster)
@@ -62,7 +63,14 @@ library(dismo)
 
 ## 2.1 GET BD SHAPEFILE and WORLCLIM data
 ext = c(91,93,19,23)  # c(xmin,xmax,ymin,ymax)
+# -30.506739, -30.530748, 143.158580, 143.128823
+# aus_ext = c(-30.506739, -30.530748, 143.158580, 143.128823)
+plot(ext(ext))
+
+help(getData,raster)
 bd  = getData('GADM',country='Bangladesh',level=2,path = "./data",download = F)
+# aus=getData('GADM',country='Australia',level=2,path = "./data",download = T)
+# plot(aus,axes=T)
 bd_main = bd # saving in a new variable to use later
 
 # crop the country shape file to study area extent
@@ -97,7 +105,20 @@ dev.off() # close the plot
 # The download=F argument specifies that don't download, if we alreay previously
 # download
 
-bio19 = getData('worldclim','bio',res=0.5,lon=90, lat=22,path = "./data",download=F)
+help(getData,raster)
+bio19 = getData(
+  name='worldclim',
+  var='bio',
+  res=0.5,
+  lon=90, 
+  lat=22,
+  path = "./data",
+  download=F
+  )
+
+# the number of layers
+nlayers(bio19)
+
 bio19 = crop(bio19,extent(ext))  # crop the data using the extent
 
 # HOW TO PLOT RASTER AND SHAPEFILE
@@ -132,7 +153,7 @@ dev.off()
 # Phillips, S. J. (2005). A brief tutorial on Maxent. AT&T Research, 190(4), 231-259.
 
 # Presence points
-occ = dismo::randomPoints(n=30,bio19[[1]])
+#occ = dismo::randomPoints(n=30,bio19[[1]])
 # If you have your species occurrence points in a csv file where first two
 # columns are "longitude" and "latitude" (order is important), then you can
 # read them 
@@ -147,7 +168,7 @@ bg = dismo::randomPoints(n=1000,bio19[[1]])
 # If we want to use other package we do not need this format. But, SDMtune
 # package is very useful, later we will discover.
 data <- SDMtune::prepareSWD(
-  species = "Scientific Name", 
+  species = "Pathenium hys", 
   p = occ, 
   a = bg,
   env = bio19, 
@@ -159,6 +180,7 @@ data@species
 data@data[1:10,1:3]
 data@pa[1:6]
 data@coords[1:6,]
+
 
 #-------------------------------------------------------------------------------
 # TRAIN A DEFAULT MAXENT MODEL
@@ -271,3 +293,4 @@ sessionInfo()
 # [43] ellipsis_0.3.2      assertthat_0.2.1    colorspace_2.0-3   
 # [46] labeling_0.4.2      utf8_1.2.2          stringi_1.7.6      
 # [49] munsell_0.5.0       crayon_1.5.1        zoo_1.8-10         
+
