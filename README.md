@@ -9,13 +9,6 @@ start from beginning. Clearing R memory and session variables
 
 ``` r
 gc()            # clear memory
-```
-
-    ##          used (Mb) gc trigger (Mb) max used (Mb)
-    ## Ncells 466832 25.0    1011704 54.1   644202 34.5
-    ## Vcells 845032  6.5    8388608 64.0  1637088 12.5
-
-``` r
 rm(list=ls())   # clear R session
 ```
 
@@ -29,11 +22,6 @@ current working directory to a new one, use the setwd() function
 
 ``` r
 getwd()
-```
-
-    ## [1] "D:/github/sdm"
-
-``` r
 # setwd("D:/github/sdm") 
 ```
 
@@ -120,9 +108,6 @@ plot(bd,axes=T, main="Cropped shapefile")
 dev.off() # close the plot
 ```
 
-    ## null device 
-    ##           1
-
 ## 2.2 Raster/Image data: GET WORLD CLIM DATA
 
 The worldclim website provides the documentation of the bioclimatic
@@ -164,11 +149,7 @@ We can check the images using default plot function.
 ``` r
 # the number of layers
 nlayers(bio19)
-```
 
-    ## [1] 19
-
-``` r
 bio19 = crop(bio19,extent(ext))  # crop the data using the extent
 
 # HOW TO PLOT RASTER AND SHAPEFILE
@@ -191,9 +172,6 @@ pdf("./result/bio1-4.pdf",width = 6,height = 4)
 plot(bio19[[1:4]])
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 To save the images in computer memory.
 
@@ -260,43 +238,10 @@ can access the data stored in this object.
 ``` r
 # check the data object, what is inside
 data@species
-```
-
-    ## [1] "Pathenium hys"
-
-``` r
 data@data[1:10,1:3]
-```
-
-    ##    bio1_29 bio2_29 bio3_29
-    ## 1      259      86      46
-    ## 2      243      88      46
-    ## 3      257      85      45
-    ## 4      257      83      46
-    ## 5      254      86      45
-    ## 6      247      81      45
-    ## 7      250      83      45
-    ## 8      249      85      46
-    ## 9      258      86      46
-    ## 10     257      84      43
-
-``` r
 data@pa[1:6]
-```
-
-    ## [1] 1 1 1 1 1 1
-
-``` r
 data@coords[1:6,]
 ```
-
-    ##          X        Y
-    ## 1 91.93750 22.43750
-    ## 2 92.87917 22.72083
-    ## 3 91.65417 22.66250
-    ## 4 92.15417 21.84583
-    ## 5 92.72083 21.77917
-    ## 6 92.37917 21.45417
 
 # TRAIN A DEFAULT MAXENT MODEL
 
@@ -341,11 +286,6 @@ plotResponse(mx1, var = c("bio1_29"), type = "logistic")
 ``` r
 # Then we plot the ROC curve for our model which shows the traing AUC
 auc(mx1)        # just to get the model AUC
-```
-
-    ## [1] 0.81595
-
-``` r
 plotROC(mx1)    # to plot the AUC curve
 ```
 
@@ -369,12 +309,6 @@ just use the plotPred function.
 
 ``` r
 dev.off() # clear the plotting window at first
-```
-
-    ## null device 
-    ##           1
-
-``` r
 plotPred(map, 
  lt = "Habitat\nsuitability",
  colorramp = c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
