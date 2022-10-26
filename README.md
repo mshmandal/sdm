@@ -1,2 +1,1 @@
-# sdm
-SDM exercise
+# Simple R script to make SDM model
