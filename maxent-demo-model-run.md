@@ -12,8 +12,8 @@ gc()            # clear memory
 ```
 
     ##          used (Mb) gc trigger (Mb) max used (Mb)
-    ## Ncells 466881 25.0    1011844 54.1   644202 34.5
-    ## Vcells 845830  6.5    8388608 64.0  1637088 12.5
+    ## Ncells 466832 25.0    1011704 54.1   644202 34.5
+    ## Vcells 845054  6.5    8388608 64.0  1637088 12.5
 
 ``` r
 rm(list=ls())   # clear R session
@@ -384,7 +384,7 @@ plotResponse(mx1, var = c("bio1_29"), type = "logistic")
 auc(mx1)        # just to get the model AUC
 ```
 
-    ## [1] 0.8271167
+    ## [1] 0.8371167
 
 ``` r
 plotROC(mx1)    # to plot the AUC curve
@@ -449,35 +449,3 @@ vignettes.
 # Check SDM PACKAGE HELP
 browseURL(url = "https://cran.r-project.org/web/packages/SDMtune/vignettes/basic-use.html")
 ```
-
-########################################################################### 
-
-sessionInfo() \# R version 4.2.0 (2022-04-22 ucrt) \# Platform:
-x86_64-w64-mingw32/x64 (64-bit) \# Running under: Windows 10 x64 (build
-19044) \# \# Matrix products: default \# \# locale: \# \[1\]
-LC_COLLATE=English_United Kingdom.utf8 \# \[2\] LC_CTYPE=English_United
-Kingdom.utf8  
-\# \[3\] LC_MONETARY=English_United Kingdom.utf8 \# \[4\] LC_NUMERIC=C  
-\# \[5\] LC_TIME=English_United Kingdom.utf8  
-\# \# attached base packages: \# \[1\] stats graphics grDevices utils
-datasets methods base  
-\# \# other attached packages: \# \[1\] dismo_1.3-5 SDMtune_1.1.5
-raster_3.5-15 sp_1.4-7  
-\# \# loaded via a namespace (and not attached): \# \[1\] Rcpp_1.0.8.3
-plyr_1.8.7 RColorBrewer_1.1-3 \# \[4\] pillar_1.7.0 compiler_4.2.0
-plotROC_2.3.0  
-\# \[7\] rasterVis_0.51.2 tools_4.2.0 digest_0.6.29  
-\# \[10\] viridisLite_0.4.0 lifecycle_1.0.1 tibble_3.1.7  
-\# \[13\] gtable_0.3.0 lattice_0.20-45 png_0.1-7  
-\# \[16\] pkgconfig_2.0.3 rlang_1.0.2 cli_3.3.0  
-\# \[19\] DBI_1.1.2 parallel_4.2.0 rgdal_1.5-31  
-\# \[22\] hexbin_1.28.2 rJava_1.0-6 terra_1.5-21  
-\# \[25\] dplyr_1.0.9 stringr_1.4.0 generics_0.1.2  
-\# \[28\] vctrs_0.4.1 rgeos_0.5-9 grid_4.2.0  
-\# \[31\] tidyselect_1.1.2 glue_1.6.2 R6_2.5.1  
-\# \[34\] jpeg_0.1-9 fansi_1.0.3 latticeExtra_0.6-29 \# \[37\]
-farver_2.1.0 ggplot2_3.3.6 purrr_0.3.4  
-\# \[40\] magrittr_2.0.3 scales_1.2.0 codetools_0.2-18  
-\# \[43\] ellipsis_0.3.2 assertthat_0.2.1 colorspace_2.0-3  
-\# \[46\] labeling_0.4.2 utf8_1.2.2 stringi_1.7.6  
-\# \[49\] munsell_0.5.0 crayon_1.5.1 zoo_1.8-10
