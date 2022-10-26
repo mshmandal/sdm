@@ -262,7 +262,7 @@ based on some algorithm search
 
 ``` r
 mx1 = train(
-  method = "Maxent",  # the name of the model
+  method = "Maxnet",  # the name of the model
   fc="lqh",           # feature classes: linear, quadratic, hinge
   reg=0.5,            # regularization parameters
   verbose = T,        # show message during training
