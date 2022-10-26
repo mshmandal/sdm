@@ -13,7 +13,7 @@ gc()            # clear memory
 
     ##          used (Mb) gc trigger (Mb) max used (Mb)
     ## Ncells 466832 25.0    1011704 54.1   644202 34.5
-    ## Vcells 845054  6.5    8388608 64.0  1637088 12.5
+    ## Vcells 845032  6.5    8388608 64.0  1637088 12.5
 
 ``` r
 rm(list=ls())   # clear R session
@@ -42,15 +42,8 @@ i.e. inside the “D:/github/sdm” folder to save data and results
 
 ``` r
 dir.create("./data")
-```
-
-    ## Warning in dir.create("./data"): '.\data' already exists
-
-``` r
 dir.create("./result")
 ```
-
-    ## Warning in dir.create("./result"): '.\result' already exists
 
 ## STEP 1: Install required libraries
 
@@ -69,29 +62,10 @@ Now load the packages
 
 ``` r
 library(raster)
-```
-
-    ## Loading required package: sp
-
-``` r
 library(SDMtune)
-```
-
-    ## 
-    ##    _____  ____   __  ___ __
-    ##   / ___/ / __ \ /  |/  // /_ __  __ ____   ___
-    ##   \__ \ / / / // /|_/ // __// / / // __ \ / _ \
-    ##  ___/ // /_/ // /  / // /_ / /_/ // / / //  __/
-    ## /____//_____//_/  /_/ \__/ \__,_//_/ /_/ \___/  version 1.1.5
-    ## 
-    ## To cite this package in publications type: citation("SDMtune").
-
-``` r
 library(dismo)
 library(terra)
 ```
-
-    ## terra 1.6.7
 
 ## Step 2 : Prepare data for model
 
@@ -116,17 +90,11 @@ ext = c(91,93,19,23)  # c(xmin,xmax,ymin,ymax)
 plot(ext(ext))
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 #help(getData,raster)
 bd  = getData('GADM',country='Bangladesh',level=2,path = "./data",download = F)
-```
-
-    ## Warning in getData("GADM", country = "Bangladesh", level = 2, path = "./data", : getData will be removed in a future version of raster
-    ## . Please use the geodata package instead
-
-``` r
 # aus=getData('GADM',country='Australia',level=2,path = "./data",download = T)
 # plot(aus,axes=T)
 bd_main = bd # saving in a new variable to use later
@@ -146,7 +114,7 @@ plot(bd_main,axes=T, main="Bangladesh admin Level2")
 plot(bd,axes=T, main="Cropped shapefile")
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ``` r
 dev.off() # close the plot
@@ -189,9 +157,6 @@ bio19 = getData(
   )
 ```
 
-    ## Warning in getData(name = "worldclim", var = "bio", res = 0.5, lon = 90, : getData will be removed in a future version of raster
-    ## . Please use the geodata package instead
-
 ### Plotting raster images
 
 We can check the images using default plot function.
@@ -211,14 +176,14 @@ plot(bio19[[1]],main="Annual mean temperature")
 plot(bd,add=T)
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 ``` r
 # first four layers
 plot(bio19[[1:4]])
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-11-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-11-2.png)
 
 ``` r
 # saving the results
@@ -287,10 +252,6 @@ data <- SDMtune::prepareSWD(
   env = bio19, 
   )
 ```
-
-    ## Extracting predictor information for presence locations...
-
-    ## Extracting predictor information for absence/background locations...
 
 The SWD object arranges required data for model training. We can check
 the SWD object that we created in this case “data”. Using @ (at) sign we
@@ -364,8 +325,6 @@ mx1 = train(
   )    
 ```
 
-    ## Loading required namespace: rJava
-
 ### Model results
 
 SDMtune has several functions to show the model results First we plot
@@ -377,20 +336,20 @@ multiple variables also
 plotResponse(mx1, var = c("bio1_29"), type = "logistic")
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-18-1.png)
 
 ``` r
 # Then we plot the ROC curve for our model which shows the traing AUC
 auc(mx1)        # just to get the model AUC
 ```
 
-    ## [1] 0.8371167
+    ## [1] 0.81595
 
 ``` r
 plotROC(mx1)    # to plot the AUC curve
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-18-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-18-2.png)
 
 ### APPLY MODEL PREDICTION
 
@@ -435,7 +394,7 @@ plot(
 plot(bd,add=T) # overlay the shapefile on top of it
 ```
 
-![](maxent-demo-model-run_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 ### Furthur reading
 
