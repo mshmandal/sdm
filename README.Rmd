@@ -33,8 +33,7 @@ directory use getwd() function. And to change the current working directory
 to a new one, use the setwd() function
 
 ```{r}
-getwd()
-# setwd("D:/github/sdm") 
+# getwd()
 ```
 
 Now we create two separate folder inside our project directory i.e. inside 
@@ -165,14 +164,19 @@ bio19 = crop(bio19,extent(ext))  # crop the data using the extent
 # HOW TO PLOT RASTER AND SHAPEFILE
 plot(bio19[[1]],main="Annual mean temperature")
 plot(bd,add=T)
+```
 
+
+Separately we can plot first four layers also.
+
+
+```{r}
 # first four layers
 plot(bio19[[1:4]])
 
 # saving the results
 pdf("./result/bio1-4.pdf",width = 6,height = 4)
 plot(bio19[[1:4]])
-dev.off()
 ```
 
 To save the images in computer memory.

@@ -21,8 +21,7 @@ current project directory use getwd() function. And to change the
 current working directory to a new one, use the setwd() function
 
 ``` r
-getwd()
-# setwd("D:/github/sdm") 
+# getwd()
 ```
 
 Now we create two separate folder inside our project directory
@@ -159,18 +158,19 @@ plot(bd,add=T)
 
 ![](README_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
+Separately we can plot first four layers also.
+
 ``` r
 # first four layers
 plot(bio19[[1:4]])
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-11-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
 ``` r
 # saving the results
 pdf("./result/bio1-4.pdf",width = 6,height = 4)
 plot(bio19[[1:4]])
-dev.off()
 ```
 
 To save the images in computer memory.
@@ -281,7 +281,7 @@ multiple variables also
 plotResponse(mx1, var = c("bio1_29"), type = "logistic")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
 ``` r
 # Then we plot the ROC curve for our model which shows the traing AUC
@@ -289,7 +289,7 @@ auc(mx1)        # just to get the model AUC
 plotROC(mx1)    # to plot the AUC curve
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-18-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-19-2.png)
 
 ### APPLY MODEL PREDICTION
 
@@ -328,7 +328,7 @@ plot(
 plot(bd,add=T) # overlay the shapefile on top of it
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 ### Furthur reading
 
